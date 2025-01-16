@@ -46,104 +46,106 @@ class EditView extends GetView {
             controller.eventDateController.text = snapshot.data!.eventDate ?? '';
             controller.locationController.text = snapshot.data!.location ?? '';
           }
-          return Column(
-            children: [
-              // Animasi lucu buat header, biar tampilannya fun
-              Padding(
-                padding: const EdgeInsets.only(top: 70.0),
-                child: Lottie.network(
-                  'https://gist.githubusercontent.com/olipiskandar/2095343e6b34255dcfb042166c4a3283/raw/d76e1121a2124640481edcf6e7712130304d6236/praujikom_kucing.json',
-                  fit: BoxFit.cover, // Cocokin animasi ke layar
-                ),
-              ),
-              // Input buat nama event, langsung autofill dari server
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: TextField(
-                  autofocus: true, // Fokus langsung ke input pertama
-                  controller: controller.nameController, // Controller buat nama
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(), // Border rapi
-                    labelText: 'Event Name', // Label form
-                    hintText: 'Masukan Nama Event', // Petunjuk input
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                // Animasi lucu buat header, biar tampilannya fun
+                Padding(
+                  padding: const EdgeInsets.only(top: 70.0),
+                  child: Lottie.network(
+                    'https://gist.githubusercontent.com/olipiskandar/2095343e6b34255dcfb042166c4a3283/raw/d76e1121a2124640481edcf6e7712130304d6236/praujikom_kucing.json',
+                    fit: BoxFit.cover, // Cocokin animasi ke layar
                   ),
                 ),
-              ),
-              // Input deskripsi event
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                child: TextField(
-                  controller: controller.descriptionController, // Controller deskripsi
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Description',
-                    hintText: 'Masukan Deskripsi',
-                  ),
-                ),
-              ),
-              // Input tanggal event, bisa dipilih lewat date picker
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: TextField(
-                  controller: controller.eventDateController, // Controller tanggal
-                  readOnly: true, // Supaya cuma bisa diubah lewat picker
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Event Date',
-                    hintText: 'Masukan Tanggal Event',
-                  ),
-                  onTap: () async {
-                    // Date picker buat pilih tanggal
-                    DateTime? selectedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(), // Mulainya dari hari ini
-                      firstDate: DateTime(2024), // Minimal 2024
-                      lastDate: DateTime(2100), // Maksimal 2100
-                    );
-                    // Kalau tanggal dipilih, langsung di-set ke controller
-                    if (selectedDate != null) {
-                      controller.eventDateController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
-                    }
-                  },
-                ),
-              ),
-              // Input lokasi event
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                child: TextField(
-                  controller: controller.locationController, // Controller lokasi
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Location',
-                    hintText: 'Masukan Lokasi Event',
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 10, // Jarak biar nggak nempel
-              ),
-              // Tombol save buat nyimpen perubahan
-              Container(
-                height: 50, // Tinggi tombol
-                width: 150, // Lebar tombol
-                decoration: BoxDecoration(
-                  color: Colors.blue, // Warna biru biar mencolok
-                  borderRadius: BorderRadius.circular(20), // Sudut rounded
-                ),
-                child: TextButton(
-                  onPressed: () {
-                    controller.editEvent(id: id); // Aksi edit event
-                  },
-                  child: const Text(
-                    'Save', // Teks tombol "Save"
-                    style: TextStyle(
-                      color: Colors.white, // Teks putih biar kontras
-                      fontSize: 25, // Ukuran teks gede
+                // Input buat nama event, langsung autofill dari server
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: TextField(
+                    autofocus: true, // Fokus langsung ke input pertama
+                    controller: controller.nameController, // Controller buat nama
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(), // Border rapi
+                      labelText: 'Event Name', // Label form
+                      hintText: 'Masukan Nama Event', // Petunjuk input
                     ),
                   ),
                 ),
-              ),
-            ],
+                // Input deskripsi event
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: TextField(
+                    controller: controller.descriptionController, // Controller deskripsi
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Description',
+                      hintText: 'Masukan Deskripsi',
+                    ),
+                  ),
+                ),
+                // Input tanggal event, bisa dipilih lewat date picker
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: TextField(
+                    controller: controller.eventDateController, // Controller tanggal
+                    readOnly: true, // Supaya cuma bisa diubah lewat picker
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Event Date',
+                      hintText: 'Masukan Tanggal Event',
+                    ),
+                    onTap: () async {
+                      // Date picker buat pilih tanggal
+                      DateTime? selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(), // Mulainya dari hari ini
+                        firstDate: DateTime(2024), // Minimal 2024
+                        lastDate: DateTime(2100), // Maksimal 2100
+                      );
+                      // Kalau tanggal dipilih, langsung di-set ke controller
+                      if (selectedDate != null) {
+                        controller.eventDateController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+                      }
+                    },
+                  ),
+                ),
+                // Input lokasi event
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: TextField(
+                    controller: controller.locationController, // Controller lokasi
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Location',
+                      hintText: 'Masukan Lokasi Event',
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10, // Jarak biar nggak nempel
+                ),
+                // Tombol save buat nyimpen perubahan
+                Container(
+                  height: 50, // Tinggi tombol
+                  width: 150, // Lebar tombol
+                  decoration: BoxDecoration(
+                    color: Colors.blue, // Warna biru biar mencolok
+                    borderRadius: BorderRadius.circular(20), // Sudut rounded
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      controller.editEvent(id: id); // Aksi edit event
+                    },
+                    child: const Text(
+                      'Save', // Teks tombol "Save"
+                      style: TextStyle(
+                        color: Colors.white, // Teks putih biar kontras
+                        fontSize: 25, // Ukuran teks gede
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),
