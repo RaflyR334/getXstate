@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:myapp/app/modules/dashboard/views/event_detail_view.dart';
-
 import '../controllers/dashboard_controller.dart';
 import 'add_view.dart';
 import 'edit_view.dart';

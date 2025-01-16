@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:get_storage/get_storage.dart';
 
 import '../../../data/detail_event_response.dart';
 import '../../../data/event_response.dart';
+import '../../../data/profile_response.dart';
 import '../../../utils/api.dart';
 import '../views/index_view.dart';
 import '../views/profile_view.dart';
@@ -12,6 +14,7 @@ import '../views/your_event_view.dart';
 class DashboardController extends GetxController {
   final _getConnect = GetConnect();
   var selectedIndex = 0.obs;
+  var profileResponse = Rxn<ProfileResponse>();
 
   final token = GetStorage().read('token');
 
@@ -57,11 +60,11 @@ class DashboardController extends GetxController {
   // Menambah event
   void addEvent() async {
     final response = await _getConnect.post(
-      BaseUrl.events, 
+      BaseUrl.events,
       {
-        'name': nameController.text, 
-        'description': descriptionController.text, 
-        'event_date': eventDateController.text, 
+        'name': nameController.text,
+        'description': descriptionController.text,
+        'event_date': eventDateController.text,
         'location': locationController.text,
       },
       headers: {'Authorization': "Bearer $token"},
@@ -174,6 +177,64 @@ class DashboardController extends GetxController {
     }
   }
 
+  Future<void> getProfile() async {
+    final response = await _getConnect.get(
+      BaseUrl.profile,
+      headers: {'Authorization': "Bearer $token"},
+      contentType: "application/json",
+    );
+
+    if (response.statusCode == 200) {
+      profileResponse.value = ProfileResponse.fromJson(response.body);
+    } else {
+      Get.snackbar(
+        'Error',
+        'Failed to load profile',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  // Fungsi buat logout user
+  void logOut() async {
+    // Kirim request POST ke server buat logout
+    final response = await _getConnect.post(
+      BaseUrl.logout, // Endpoint buat logout
+      {}, // Gak ada body karena logout aja
+      headers: {'Authorization': "Bearer $token"}, // Header dengan token user
+      contentType: "application/json", // Format data JSON
+    );
+
+    // Kalau server bilang logout sukses
+    if (response.statusCode == 200) {
+      // Kasih notifikasi logout berhasil
+      Get.snackbar(
+        'Success', // Judul snack bar
+        'Logout Success', // Pesan sukses
+        snackPosition: SnackPosition.BOTTOM, // Snack muncul di bawah
+        backgroundColor: Colors.green, // Warna hijau biar good vibes
+        colorText: Colors.white, // Teks putih biar jelas
+      );
+
+      // Hapus semua data user dari penyimpanan lokal
+      GetStorage().erase();
+
+      // Redirect user ke halaman login
+      Get.offAllNamed('/login'); // Bersih-bersih dan langsung ke login
+    } else {
+      // Kalau gagal logout, kasih tau user
+      Get.snackbar(
+        'Failed', // Judul snack bar
+        'Logout Failed', // Pesan error
+        snackPosition: SnackPosition.BOTTOM, // Snack muncul di bawah
+        backgroundColor: Colors.red, // Warna merah buat error vibes
+        colorText: Colors.white, // Teks putih biar kontras
+      );
+    }
+  }
+
   // Fungsi untuk mengubah halaman yang ditampilkan
   void changeIndex(int index) {
     selectedIndex.value = index;
@@ -190,6 +251,7 @@ class DashboardController extends GetxController {
   void onInit() {
     getEvent();
     getYourEvent();
+    getProfile();
     super.onInit();
   }
 
